@@ -96,6 +96,31 @@ const SignInPage = () => {
                     </Button>
                 </form>
 
+                <div className="flex items-center space-x-2 my-4">
+                    <div className="flex-1 h-px bg-gray-300"></div>
+                    <span className="text-sm text-gray-400 font-medium">OR</span>
+                    <div className="flex-1 h-px bg-gray-300"></div>
+                </div>
+
+                <div className="space-y-3">
+                    <Button
+                        onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
+                        variant="outline"
+                        className="w-full"
+                        type="button"
+                    >
+                        Sign in with Google
+                    </Button>
+                    <Button
+                        onClick={() => signIn('github', { callbackUrl: '/dashboard' })}
+                        variant="outline"
+                        className="w-full"
+                        type="button"
+                    >
+                        Sign in with GitHub
+                    </Button>
+                </div>
+
                 <p className="text-sm text-center text-gray-500">
                     Don't have an account?{' '}
                     <Link href="/sign-up" className="font-medium text-blue-600 hover:underline">Sign Up</Link>

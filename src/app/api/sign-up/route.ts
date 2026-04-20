@@ -1,67 +1,46 @@
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
 import bcrypt from "bcryptjs";
-import { sendVerificationEmail } from "@/helpers/sendVerificationEmail";
 
 export async function POST(request: Request) {
     await dbConnect()
 
     try {
         const { username, email, password } = await request.json()
-        const existingUserVerifiedByUsername = await UserModel.findOne({
-            username,
-            isVerified: true
-        })
+        const existingUserByUsername = await UserModel.findOne({ username })
 
-        if (existingUserVerifiedByUsername) {
+        if (existingUserByUsername) {
             return Response.json({
                 success: false,
-                message: "Username is already Taken....."
+                message: "Username is already Taken"
             }, { status: 400 })
         }
 
-        const existingUserVerifiedByEmail = await UserModel.findOne({ email })
-        const verifyCode = Math.floor(10000 + Math.random() * 90000).toString()
+        const existingUserByEmail = await UserModel.findOne({ email })
 
-        if (existingUserVerifiedByEmail) {
-            if (existingUserVerifiedByEmail.isVerified) {
-                return Response.json({
-                    success: false, message: 'User already register'
-                }, { status: 400 })
-            } else {
-                const hasedPassword = await bcrypt.hash(password,10)
-                existingUserVerifiedByEmail.password=hasedPassword;
-                existingUserVerifiedByEmail.verifyCode = verifyCode;
-                existingUserVerifiedByEmail.verifyCodeExpiry=new Date(Date.now()+3600000)
-                await existingUserVerifiedByEmail.save()
-            }
+        if (existingUserByEmail) {
+            return Response.json({
+                success: false, 
+                message: 'User already exists with this email'
+            }, { status: 400 })
         } else {
             const hasedPassword = await bcrypt.hash(password, 10)
-            const expiryDate = new Date()
-            expiryDate.setHours(expiryDate.getHours() + 1)
 
             const newUser = new UserModel({
                 username,
                 email,
                 password: hasedPassword,
-                verifyCode,
-                verifyCodeExpiry: expiryDate,
-                isVerified: false,
+                isVerified: true,
                 isAcceptingMessages: true,
                 messages: []
             })
             await newUser.save()
         }
-        //send verification Email
-        const emailResponse = await sendVerificationEmail(email, username, verifyCode)
-        if (!emailResponse.success) {
-            return Response.json({ success: false, message: emailResponse.message }, { status: 500 })
-        }
-        return Response.json({ success: true, message: "user registered successfully. Please verify Email" }, { status: 201 })
+
+        return Response.json({ success: true, message: "User registered successfully." }, { status: 201 })
 
     } catch (error) {
-        console.error('Error regestering user:', error)
+        console.error('Error registering user:', error)
         return Response.json({ success: false, message: 'Failed to register user' }, { status: 500 })
-
     }
 }

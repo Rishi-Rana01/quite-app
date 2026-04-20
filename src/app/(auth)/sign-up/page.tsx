@@ -71,7 +71,7 @@ const SignUpPage = () => {
                 description: response.data.message,
             })
 
-            router.replace(`/verify/${encodeURIComponent(data.username)}`)
+            router.replace('/sign-in')
         } catch (error) {
             console.error('Error in signup of User', error)
             const axiosError = error as AxiosError<ApiResponse>
