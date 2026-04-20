@@ -1,65 +1,67 @@
-import Image from "next/image";
+"use client";
+
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import messages from "@/message.json";
+import { Mail } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <>
+      <main className="grow flex flex-col items-center justify-center px-4 md:px-24 py-12 bg-zinc-50 dark:bg-zinc-950 min-h-screen">
+        <section className="text-center mb-8 md:mb-12 space-y-6 max-w-4xl">
+          <div className="inline-block rounded-full bg-zinc-200 dark:bg-zinc-800 px-3 py-1 mb-4 text-sm font-medium text-zinc-800 dark:text-zinc-200 shadow-sm transition-colors cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-700">
+            Welcome to Quite App
+          </div>
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-zinc-900 to-zinc-500 dark:from-zinc-100 dark:to-zinc-500 pb-2">
+            Dive into the World of <br className="hidden md:block"/> Anonymous Feedback
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="mt-3 md:mt-4 text-lg md:text-xl text-zinc-600 dark:text-zinc-400">
+            Quite App - Where your identity remains a secret.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-39.5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/8 px-5 transition-colors hover:border-transparent hover:bg-black/4 dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-39.5"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+        </section>
+
+        <Carousel
+          plugins={[Autoplay({ delay: 2000 })]}
+          className="w-full max-w-lg md:max-w-xl shadow-xl rounded-xl"
+        >
+          <CarouselContent>
+            {messages.map((message, idx) => (
+              <CarouselItem key={idx}>
+                <div className="p-1">
+                  <Card className="hover:shadow-2xl transition-all duration-300 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-zinc-200 dark:border-zinc-800">
+                    <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-zinc-100 dark:border-zinc-800">
+                      <h3 className="font-semibold text-lg text-zinc-900 dark:text-zinc-100">{message.title}</h3>
+                      <Mail className="w-5 h-5 text-zinc-500" />
+                    </CardHeader>
+                    <CardContent className="pt-4 flex flex-col items-start">
+                      <p className="text-zinc-700 dark:text-zinc-300 text-lg mb-4 font-medium italic text-left w-full">
+                        "{message.content}"
+                      </p>
+                      <p className="text-xs text-zinc-500 dark:text-zinc-400 text-right w-full font-medium">
+                        {message.received}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="hidden md:flex bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50" />
+          <CarouselNext className="hidden md:flex bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50" />
+        </Carousel>
       </main>
-    </div>
+
+      <footer className="text-center p-6 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-zinc-600 dark:text-zinc-400 font-medium tracking-wide">
+        © 2026 Quite App. All rights reserved.
+      </footer>
+    </>
   );
 }
