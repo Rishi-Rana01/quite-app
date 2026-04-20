@@ -27,7 +27,10 @@ const Dashboard = () => {
     }
 
     const form = useForm({
-        resolver: zodResolver(acceptMessageSchema)
+        resolver: zodResolver(acceptMessageSchema),
+        defaultValues: {
+            acceptMessages: false
+        }
     })
 
     const { register, watch, setValue } = form
@@ -36,15 +39,14 @@ const Dashboard = () => {
     const fetchAcceptMessage = useCallback(async () => {
         setIsSwitching(true)
         try {
-            const response = await axios.get<ApiResponse>('/api/get-messages')
-            setValue('acceptMessages', response.data.isAcceptingMessages as boolean)
+            const response = await axios.get<ApiResponse>('/api/accept-messages')
             if (response.data.isAcceptingMessages !== undefined) {
                 setValue('acceptMessages', response.data.isAcceptingMessages)
             }
         } catch (error) {
-            console.log("Error in fetching messages", error)
+            console.log("Error in fetching accept message status", error)
             const axiosError = error as AxiosError<ApiResponse>
-            toast.error(axiosError.response?.data.message || "Failed to fetch messages")
+            toast.error(axiosError.response?.data.message || "Failed to fetch message status")
         }
         finally {
             setIsSwitching(false)
@@ -90,10 +92,6 @@ const Dashboard = () => {
         }
     }
 
-    const { username } = session?.user as User
-    const baseUrl = `${window.location.protocol}//${window.location.host}`
-    const profileUrl = `${baseUrl}/u/${username}`
-
     if (!session || !session.user) {
         return <div>Please Login
             <Link href="/sign-in">
@@ -101,6 +99,10 @@ const Dashboard = () => {
             </Link>
         </div>
     }
+
+    const { username } = session.user as User
+    const baseUrl = typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.host}` : ''
+    const profileUrl = `${baseUrl}/u/${username}`
 
     const copyToClipboard = () => {
         navigator.clipboard.writeText(profileUrl)

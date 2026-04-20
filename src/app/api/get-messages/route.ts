@@ -22,22 +22,23 @@ export async function GET(request: Request) {
     const userId = new mongoose.Types.ObjectId(user._id);
     try {
         const user = await UserModel.aggregate([
-            { $match: { id: userId } },
+            { $match: { _id: userId } },
             { $unwind: "$messages" },
             { $sort: { "messages.createdAt": -1 } },
             { $group: { _id: "$_id", messages: { $push: "$messages" } } }
         ])
         if (!user || user.length === 0) {
             return Response.json({
-                success: false,
-                message: "User not found or no messages available"
-            }, { status: 401 })
+                success: true,
+                messages: [],
+                message: "No messages yet"
+            }, { status: 200 })
         }
 
         return Response.json({
                 success: true,
                 message: "Messages retrieved successfully",
-                data: user[0].messages
+                messages: user[0].messages
             }, { status: 200 })
 
 

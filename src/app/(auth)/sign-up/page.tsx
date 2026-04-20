@@ -11,6 +11,7 @@ import { signUpSchema } from "@/schemas/signUpSchema"
 import axios, { AxiosError } from 'axios'
 import { ApiResponse } from "@/types/ApiResponse"
 import { Button } from "@/components/ui/button"
+import { signIn } from "next-auth/react"
 
 const SignUpPage = () => {
     const [usernameMessage, setUsernameMessage] = useState('')
@@ -137,6 +138,31 @@ const SignUpPage = () => {
                         {isSubmitting ? 'Signing up...' : 'Sign Up'}
                     </Button>
                 </form>
+
+                <div className="flex items-center space-x-2 my-4">
+                    <div className="flex-1 h-px bg-gray-300"></div>
+                    <span className="text-sm text-gray-400 font-medium">OR</span>
+                    <div className="flex-1 h-px bg-gray-300"></div>
+                </div>
+
+                <div className="space-y-3">
+                    <Button
+                        onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
+                        variant="outline"
+                        className="w-full"
+                        type="button"
+                    >
+                        Sign up with Google
+                    </Button>
+                    <Button
+                        onClick={() => signIn('github', { callbackUrl: '/dashboard' })}
+                        variant="outline"
+                        className="w-full"
+                        type="button"
+                    >
+                        Sign up with GitHub
+                    </Button>
+                </div>
 
                 <p className="text-sm text-center text-gray-500">
                     Already have an account?{' '}
