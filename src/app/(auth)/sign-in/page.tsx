@@ -8,7 +8,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import {
-  Ripple,
   AuthTabs,
   TechOrbitDisplay,
 } from '@/components/ui/modern-animated-sign-in';
@@ -189,8 +188,7 @@ const SignInPage = () => {
 
       {/* Left Side */}
       <span className='flex flex-col justify-center w-1/2 max-lg:hidden relative z-0'>
-        <Ripple mainCircleSize={100} />
-        <TechOrbitDisplay iconsArray={iconsArray} text='SYSTEM ACCESS' />
+        <TechOrbitDisplay iconsArray={iconsArray} text='QUITE-APP ACCESS' />
       </span>
 
       {/* Right Side */}
