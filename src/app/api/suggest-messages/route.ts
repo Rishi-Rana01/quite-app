@@ -10,8 +10,18 @@ const ai = new GoogleGenAI({
 const FALLBACK_QUESTIONS = [
     "Agar tujhe ek anonymous message milti abhi, kya likhna chahoge?",
     "What's something you'd only say to a stranger but never to a friend?",
-    "First impression toh batao — main kaisa/kaisi lagta/lagti hoon honestly? 👀"
-]
+    "First impression toh batao — main kaisi lagti hoon honestly? 👀",
+    "Crush ka naam batao, secret safe rahega yahan 😉",
+    "What's a weird habit you have that no one knows about?",
+    "Agar ek din ke liye invisible ban jao, toh sabse pehle kiske paas jaoge? 👻",
+    "Be honest, do you have a secret admirer right now?",
+    "If we went on a midnight drive, what songs are on the playlist? 🚗✨",
+    "Tumhara red flag kya hai jo sab ignore kar dete hain?",
+    "Ever had a dream about someone you shouldn't have? Spill! 🤫",
+    "Kya lagta hai, log pehli baar milke tumhare baare mein kya sochte hain?",
+    "Rate your flirting skills from 1 to 10. Sach bolna! 🤭",
+    "What's the most embarrassing thing you've ever Googled?"
+];
 
 export async function POST(req: Request) {
     try {
@@ -58,7 +68,9 @@ export async function POST(req: Request) {
         // On quota exhaustion (429), return fallback questions instead of crashing
         const statusCode = error?.status ?? error?.code ?? 500;
         if (statusCode === 429) {
-            const fallback = FALLBACK_QUESTIONS.join('||');
+            // Pick 3 random questions to display
+            const shuffled = [...FALLBACK_QUESTIONS].sort(() => 0.5 - Math.random());
+            const fallback = shuffled.slice(0, 3).join('||');
             return new Response(fallback, {
                 status: 200,
                 headers: { 'Content-Type': 'text/plain; charset=utf-8' }
