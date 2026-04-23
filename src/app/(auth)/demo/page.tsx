@@ -177,7 +177,7 @@ const iconsArray: OrbitIcon[] = [
   },
 ];
 
-export function Demo() {
+export default function Demo() {
   const [formData, setFormData] = useState<FormData>({
     email: '',
     password: '',
