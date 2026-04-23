@@ -4,7 +4,11 @@ import { useParams } from 'next/navigation'
 import axios, { AxiosError } from 'axios'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
-import { Loader2, Send, Sparkles, MessageCircle, RefreshCw, User, Lock } from 'lucide-react'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Loader2, Send, Sparkles, MessageCircle, RefreshCw, User, Lock, ArrowRight } from 'lucide-react'
+import Link from 'next/link'
 
 const UserProfilePage = () => {
     const params = useParams()
@@ -102,137 +106,164 @@ const UserProfilePage = () => {
 
     if (isLoadingStatus) {
         return (
-            <div className="min-h-screen bg-linear-to-br from-slate-950 via-purple-950 to-slate-900 flex items-center justify-center">
-                <Loader2 className="h-10 w-10 text-purple-400 animate-spin" />
+            <div className="flex justify-center items-center min-h-screen bg-zinc-50 dark:bg-zinc-950">
+                <Loader2 className="h-10 w-10 text-muted-foreground animate-spin" />
             </div>
         )
     }
 
     return (
-        <div className="min-h-screen bg-linear-to-br from-slate-950 via-purple-950 to-slate-900 relative overflow-hidden">
-            {/* Ambient blobs */}
-            <div className="absolute top-[-10%] left-[-5%] w-96 h-96 bg-purple-600/20 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute bottom-[-10%] right-[-5%] w-80 h-80 bg-pink-600/20 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+            {/* Top bar */}
+            <nav className="p-4 md:p-6 shadow-sm border-b border-zinc-200 dark:border-zinc-800">
+                <div className="container mx-auto flex justify-between items-center">
+                    <Link href="/" className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+                        Quite Message
+                    </Link>
+                    <Link href="/sign-in">
+                        <Button variant="outline" size="sm">Sign In</Button>
+                    </Link>
+                </div>
+            </nav>
 
-            <div className="relative z-10 max-w-2xl mx-auto px-4 py-12">
+            <div className="max-w-2xl mx-auto px-4 py-10 md:py-16">
 
                 {/* Profile Header */}
-                <div className="text-center mb-10">
-                    <div className="relative inline-flex mb-4">
-                        <div className="w-24 h-24 rounded-full bg-linear-to-br from-purple-500 via-pink-500 to-orange-400 flex items-center justify-center shadow-2xl shadow-purple-500/30">
-                            <User className="w-12 h-12 text-white" />
-                        </div>
-                        <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-green-400 border-2 border-slate-950 flex items-center justify-center">
-                            <MessageCircle className="w-3.5 h-3.5 text-white" />
-                        </div>
+                <div className="text-center mb-8">
+                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-zinc-200 dark:bg-zinc-800 mb-4 shadow-sm">
+                        <User className="w-10 h-10 text-zinc-600 dark:text-zinc-400" />
                     </div>
 
-                    <h1 className="text-3xl font-bold text-white mb-1">
+                    <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 mb-1">
                         @{username}
                     </h1>
-                    <p className="text-slate-400 text-sm">
-                        Send an anonymous message — they'll never know it's you 👀
+                    <p className="text-zinc-500 dark:text-zinc-400 text-sm">
+                        Send an anonymous message — they&apos;ll never know it&apos;s you 👀
                     </p>
                 </div>
 
                 {/* Not accepting messages state */}
                 {isAccepting === false ? (
-                    <div className="bg-white/5 border border-white/10 backdrop-blur-sm rounded-2xl p-8 text-center">
-                        <Lock className="w-10 h-10 text-slate-400 mx-auto mb-3" />
-                        <h2 className="text-white font-semibold text-lg mb-1">Not accepting messages</h2>
-                        <p className="text-slate-400 text-sm">This user has turned off anonymous messages for now.</p>
-                    </div>
+                    <Card className="text-center">
+                        <CardContent className="py-10">
+                            <div className="rounded-full bg-muted p-4 inline-flex mb-4">
+                                <Lock className="w-8 h-8 text-muted-foreground" />
+                            </div>
+                            <h2 className="text-lg font-semibold mb-1">Not accepting messages</h2>
+                            <p className="text-sm text-muted-foreground">
+                                This user has turned off anonymous messages for now.
+                            </p>
+                        </CardContent>
+                    </Card>
                 ) : (
                     <>
                         {/* Message Box */}
-                        <div className="bg-white/5 border border-white/10 backdrop-blur-sm rounded-2xl p-6 mb-6 shadow-xl">
-                            <label className="block text-sm font-medium text-slate-300 mb-3">
-                                Your anonymous message
-                            </label>
-                            <div className="relative">
-                                <textarea
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-500 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all min-h-[130px]"
-                                    placeholder="Ask something curious, confess a thought, or just say something fun... 🔮"
-                                    value={messageContent}
-                                    onChange={(e) => setMessageContent(e.target.value.slice(0, maxChars))}
-                                    rows={5}
-                                />
-                                <span className={`absolute bottom-3 right-3 text-xs ${charCount > maxChars * 0.9 ? 'text-pink-400' : 'text-slate-500'}`}>
-                                    {charCount}/{maxChars}
-                                </span>
-                            </div>
+                        <Card className="mb-6 hover:shadow-lg transition-shadow duration-300">
+                            <CardHeader className="pb-2">
+                                <div className="flex items-center gap-2">
+                                    <MessageCircle className="h-4 w-4 text-muted-foreground" />
+                                    <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                                        Your anonymous message
+                                    </span>
+                                </div>
+                            </CardHeader>
+                            <CardContent className="pt-2 space-y-4">
+                                <div className="relative">
+                                    <textarea
+                                        className="w-full rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 px-4 py-3 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all min-h-[130px] text-sm"
+                                        placeholder="Ask something curious, confess a thought, or just say something fun... 🔮"
+                                        value={messageContent}
+                                        onChange={(e) => setMessageContent(e.target.value.slice(0, maxChars))}
+                                        rows={5}
+                                    />
+                                    <span className={`absolute bottom-3 right-3 text-xs font-medium ${charCount > maxChars * 0.9 ? 'text-destructive' : 'text-muted-foreground'}`}>
+                                        {charCount}/{maxChars}
+                                    </span>
+                                </div>
 
-                            <Button
-                                onClick={handleSend}
-                                disabled={isSending || !messageContent.trim()}
-                                className="w-full mt-4 bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold py-3 rounded-xl transition-all duration-200 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                {isSending ? (
-                                    <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...</>
-                                ) : sent ? (
-                                    <><span className="mr-2">✅</span> Sent! They'll wonder who sent this...</>
-                                ) : (
-                                    <><Send className="mr-2 h-4 w-4" /> Send Anonymously</>
-                                )}
-                            </Button>
-                        </div>
+                                <Button
+                                    onClick={handleSend}
+                                    disabled={isSending || !messageContent.trim()}
+                                    className="w-full gap-2"
+                                    size="lg"
+                                >
+                                    {isSending ? (
+                                        <><Loader2 className="h-4 w-4 animate-spin" /> Sending...</>
+                                    ) : sent ? (
+                                        <><span>✅</span> Sent! They&apos;ll wonder who sent this...</>
+                                    ) : (
+                                        <><Send className="h-4 w-4" /> Send Anonymously</>
+                                    )}
+                                </Button>
+                            </CardContent>
+                        </Card>
 
                         {/* AI Suggested Questions */}
-                        <div className="bg-white/5 border border-white/10 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="flex items-center gap-2">
-                                    <Sparkles className="h-4 w-4 text-purple-400" />
-                                    <span className="text-sm font-medium text-slate-200">AI Suggested Questions</span>
-                                    <span className="text-xs text-slate-500 bg-white/5 border border-white/10 px-2 py-0.5 rounded-full">Gemini</span>
+                        <Card className="hover:shadow-lg transition-shadow duration-300">
+                            <CardHeader className="pb-3">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <Sparkles className="h-4 w-4 text-yellow-500" />
+                                        <span className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">AI Suggested Questions</span>
+                                        <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full font-medium">
+                                            Gemini
+                                        </span>
+                                    </div>
+                                    <Button
+                                        onClick={fetchSuggestions}
+                                        disabled={isLoadingSuggestions}
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-8 w-8 p-0"
+                                    >
+                                        <RefreshCw className={`h-4 w-4 ${isLoadingSuggestions ? 'animate-spin' : ''}`} />
+                                    </Button>
                                 </div>
-                                <button
-                                    onClick={fetchSuggestions}
-                                    disabled={isLoadingSuggestions}
-                                    className="text-slate-400 hover:text-purple-400 transition-colors disabled:opacity-50"
-                                    title="Refresh suggestions"
-                                >
-                                    <RefreshCw className={`h-4 w-4 ${isLoadingSuggestions ? 'animate-spin' : ''}`} />
-                                </button>
-                            </div>
+                            </CardHeader>
+                            <Separator />
+                            <CardContent className="pt-4">
+                                {isLoadingSuggestions ? (
+                                    <div className="space-y-3">
+                                        {[1, 2, 3].map(i => (
+                                            <Skeleton key={i} className="h-12 w-full rounded-lg" />
+                                        ))}
+                                    </div>
+                                ) : suggestedMessages.length > 0 ? (
+                                    <div className="space-y-2">
+                                        {suggestedMessages.map((msg, index) => (
+                                            <button
+                                                key={index}
+                                                onClick={() => setMessageContent(msg)}
+                                                className="w-full text-left px-4 py-3 rounded-lg bg-zinc-50 dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 hover:border-primary/30 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 text-sm transition-all duration-200 group flex items-center gap-2"
+                                            >
+                                                <ArrowRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary shrink-0 transition-colors" />
+                                                <span>{msg}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="text-muted-foreground text-sm text-center py-6">
+                                        Click refresh to load suggestions ✨
+                                    </p>
+                                )}
 
-                            {isLoadingSuggestions ? (
-                                <div className="space-y-3">
-                                    {[1, 2, 3].map(i => (
-                                        <div key={i} className="h-12 bg-white/5 rounded-xl animate-pulse" />
-                                    ))}
-                                </div>
-                            ) : suggestedMessages.length > 0 ? (
-                                <div className="space-y-3">
-                                    {suggestedMessages.map((msg, index) => (
-                                        <button
-                                            key={index}
-                                            onClick={() => setMessageContent(msg)}
-                                            className="w-full text-left px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-purple-500/40 text-slate-300 hover:text-white text-sm transition-all duration-200 group"
-                                        >
-                                            <span className="text-purple-400 mr-2 group-hover:text-pink-400 transition-colors">→</span>
-                                            {msg}
-                                        </button>
-                                    ))}
-                                </div>
-                            ) : (
-                                <p className="text-slate-500 text-sm text-center py-4">
-                                    Click refresh to load suggestions ✨
+                                <p className="text-xs text-muted-foreground text-center mt-4">
+                                    Click any suggestion to use it as your message
                                 </p>
-                            )}
-
-                            <p className="text-xs text-slate-600 text-center mt-4">
-                                Click any suggestion to use it as your message
-                            </p>
-                        </div>
+                            </CardContent>
+                        </Card>
                     </>
                 )}
 
                 {/* Footer note */}
-                <p className="text-center text-slate-600 text-xs mt-8">
+                <p className="text-center text-muted-foreground text-xs mt-8 font-medium tracking-wide">
                     100% anonymous · Powered by Quite Message
                 </p>
             </div>
+
+            <footer className="text-center p-6 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-zinc-600 dark:text-zinc-400 font-medium tracking-wide">
+                © 2026 Quite App. All rights reserved.
+            </footer>
         </div>
     )
 }
