@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation"
 import { signInSchema } from "@/schemas/signInSchema"
 import { signIn } from "next-auth/react"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
 const SignInPage = () => {
     const router = useRouter()
@@ -57,73 +58,78 @@ const SignInPage = () => {
     }
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100">
-            <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+        <div className="flex justify-center items-center min-h-screen bg-background cyber-grid relative z-10">
+            <div className="w-full max-w-md p-8 space-y-8 cyber-chamfer border border-border bg-background/90 backdrop-blur-md shadow-neon">
                 <div className="text-center">
-                    <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">SIGN IN</h1>
-                    <p className="mb-4">Sign in to continue your anonymous adventure</p>
+                    <h1 className="text-4xl font-heading font-black uppercase tracking-widest text-foreground cyber-glitch mb-4" data-text="SYSTEM LOGIN">
+                        SYSTEM LOGIN
+                    </h1>
+                    <p className="font-mono text-muted-foreground uppercase tracking-widest text-sm mb-4">
+                        <span className="text-accent mr-2">{">"}</span>AUTHENTICATE TO CONTINUE
+                    </p>
                 </div>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="identifier">Email or Username</label>
-                        <input
+                        <label className="block text-sm font-mono text-foreground mb-2 uppercase tracking-wide" htmlFor="identifier">Email or Username</label>
+                        <Input
                             id="identifier"
                             type="text"
-                            className="w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                            placeholder="user@domain.com"
                             {...register('identifier')}
                         />
-                        {errors.identifier && <p className="mt-1 text-xs text-red-500">{errors.identifier.message}</p>}
+                        {errors.identifier && <p className="mt-1 font-mono text-xs text-destructive">{errors.identifier.message}</p>}
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="password">Password</label>
-                        <input
+                        <label className="block text-sm font-mono text-foreground mb-2 uppercase tracking-wide" htmlFor="password">Password</label>
+                        <Input
                             id="password"
                             type="password"
-                            className="w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                            placeholder="••••••••"
                             {...register('password')}
                         />
-                        {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>}
+                        {errors.password && <p className="mt-1 font-mono text-xs text-destructive">{errors.password.message}</p>}
                     </div>
 
                     <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300"
+                        className="w-full"
+                        variant="glitch"
                     >
-                        {isSubmitting ? 'Signing in...' : 'Sign In'}
+                        {isSubmitting ? 'Authenticating...' : 'Initialize Login'}
                     </Button>
                 </form>
 
-                <div className="flex items-center space-x-2 my-4">
-                    <div className="flex-1 h-px bg-gray-300"></div>
-                    <span className="text-sm text-gray-400 font-medium">OR</span>
-                    <div className="flex-1 h-px bg-gray-300"></div>
+                <div className="flex items-center space-x-4 my-6">
+                    <div className="flex-1 h-px bg-border"></div>
+                    <span className="text-xs font-mono text-muted-foreground uppercase tracking-widest">EXTERNAL_AUTH</span>
+                    <div className="flex-1 h-px bg-border"></div>
                 </div>
 
                 <div className="space-y-3">
                     <Button
                         onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
                         variant="outline"
-                        className="w-full"
+                        className="w-full font-mono text-sm uppercase tracking-wide hover:bg-secondary hover:text-background border-secondary text-secondary hover:shadow-neon-secondary"
                         type="button"
                     >
-                        Sign in with Google
+                        [ AUTH: GOOGLE ]
                     </Button>
                     <Button
                         onClick={() => signIn('github', { callbackUrl: '/dashboard' })}
                         variant="outline"
-                        className="w-full"
+                        className="w-full font-mono text-sm uppercase tracking-wide hover:bg-foreground hover:text-background border-foreground text-foreground hover:shadow-neon"
                         type="button"
                     >
-                        Sign in with GitHub
+                        [ AUTH: GITHUB ]
                     </Button>
                 </div>
 
-                <p className="text-sm text-center text-gray-500">
-                    Don't have an account?{' '}
-                    <Link href="/sign-up" className="font-medium text-blue-600 hover:underline">Sign Up</Link>
+                <p className="text-sm text-center font-mono text-muted-foreground uppercase tracking-wider pt-4">
+                    UNREGISTERED ENTITY?{' '}
+                    <Link href="/sign-up" className="font-bold text-accent hover:text-secondary hover:underline transition-colors shadow-neon-sm">CREATE ACCOUNT</Link>
                 </p>
             </div>
         </div>

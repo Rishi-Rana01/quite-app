@@ -11,6 +11,7 @@ import { signUpSchema } from "@/schemas/signUpSchema"
 import axios, { AxiosError } from 'axios'
 import { ApiResponse } from "@/types/ApiResponse"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { signIn } from "next-auth/react"
 
 const SignUpPage = () => {
@@ -87,86 +88,89 @@ const SignUpPage = () => {
     }
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100">
-            <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+        <div className="flex justify-center items-center min-h-screen bg-background cyber-grid relative z-10">
+            <div className="w-full max-w-md p-8 space-y-8 cyber-chamfer border border-border bg-background/90 backdrop-blur-md shadow-neon">
                 <div className="text-center">
-                    <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">JOIN QUITE MESSAGE</h1>
-                    <p className="mb-4">Sign up to start your anonymous adventure</p>
+                    <h1 className="text-4xl font-heading font-black uppercase tracking-widest text-foreground cyber-glitch mb-4" data-text="JOIN NETWORK">JOIN NETWORK</h1>
+                    <p className="font-mono text-muted-foreground uppercase tracking-widest text-sm mb-4">
+                        <span className="text-accent mr-2">{">"}</span>Initialize New Entity
+                    </p>
                 </div>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="username">Username</label>
-                        <input
+                        <label className="block text-sm font-mono text-foreground mb-2 uppercase tracking-wide" htmlFor="username">Username</label>
+                        <Input
                             id="username"
                             type="text"
-                            className="w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                            placeholder="netrunner_99"
                             {...register('username')}
                         />
-                        {errors.username && <p className="mt-1 text-xs text-red-500">{errors.username.message}</p>}
-                        {isCheckingUsername && <p className="mt-1 text-xs text-gray-500">Checking username...</p>}
-                        {usernameMessage && !isCheckingUsername && <p className="mt-1 text-xs text-blue-600">{usernameMessage}</p>}
+                        {errors.username && <p className="mt-1 font-mono text-xs text-destructive">{errors.username.message}</p>}
+                        {isCheckingUsername && <p className="mt-1 font-mono text-xs text-secondary animate-pulse">Checking database...</p>}
+                        {usernameMessage && !isCheckingUsername && <p className={`mt-1 font-mono text-xs ${usernameMessage === 'Username is unique' ? 'text-accent' : 'text-destructive'}`}>{usernameMessage}</p>}
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="email">Email</label>
-                        <input
+                        <label className="block text-sm font-mono text-foreground mb-2 uppercase tracking-wide" htmlFor="email">Email</label>
+                        <Input
                             id="email"
                             type="email"
-                            className="w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                            placeholder="user@domain.com"
                             {...register('email')}
                         />
-                        {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
+                        {errors.email && <p className="mt-1 font-mono text-xs text-destructive">{errors.email.message}</p>}
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="password">Password</label>
-                        <input
+                        <label className="block text-sm font-mono text-foreground mb-2 uppercase tracking-wide" htmlFor="password">Password</label>
+                        <Input
                             id="password"
                             type="password"
-                            className="w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+                            placeholder="••••••••"
                             {...register('password')}
                         />
-                        {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>}
+                        {errors.password && <p className="mt-1 font-mono text-xs text-destructive">{errors.password.message}</p>}
                     </div>
 
                     <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300"
+                        className="w-full"
+                        variant="glitch"
                     >
-                        {isSubmitting ? 'Signing up...' : 'Sign Up'}
+                        {isSubmitting ? 'Registering...' : 'Execute Registration'}
                     </Button>
                 </form>
 
-                <div className="flex items-center space-x-2 my-4">
-                    <div className="flex-1 h-px bg-gray-300"></div>
-                    <span className="text-sm text-gray-400 font-medium">OR</span>
-                    <div className="flex-1 h-px bg-gray-300"></div>
+                <div className="flex items-center space-x-4 my-6">
+                    <div className="flex-1 h-px bg-border"></div>
+                    <span className="text-xs font-mono text-muted-foreground uppercase tracking-widest">EXTERNAL_AUTH</span>
+                    <div className="flex-1 h-px bg-border"></div>
                 </div>
 
                 <div className="space-y-3">
                     <Button
                         onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
                         variant="outline"
-                        className="w-full"
+                        className="w-full font-mono text-sm uppercase tracking-wide hover:bg-secondary hover:text-background border-secondary text-secondary hover:shadow-neon-secondary"
                         type="button"
                     >
-                        Sign up with Google
+                        [ AUTH: GOOGLE ]
                     </Button>
                     <Button
                         onClick={() => signIn('github', { callbackUrl: '/dashboard' })}
                         variant="outline"
-                        className="w-full"
+                        className="w-full font-mono text-sm uppercase tracking-wide hover:bg-foreground hover:text-background border-foreground text-foreground hover:shadow-neon"
                         type="button"
                     >
-                        Sign up with GitHub
+                        [ AUTH: GITHUB ]
                     </Button>
                 </div>
 
-                <p className="text-sm text-center text-gray-500">
-                    Already have an account?{' '}
-                    <Link href="/sign-in" className="font-medium text-blue-600 hover:underline">Sign In</Link>
+                <p className="text-sm text-center font-mono text-muted-foreground uppercase tracking-wider pt-4">
+                    EXISTING ENTITY?{' '}
+                    <Link href="/sign-in" className="font-bold text-accent hover:text-secondary hover:underline transition-colors shadow-neon-sm">AUTHENTICATE</Link>
                 </p>
             </div>
         </div>

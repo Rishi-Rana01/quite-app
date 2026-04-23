@@ -6,6 +6,7 @@ import { toast } from "sonner"
 import axios, { AxiosError } from 'axios'
 import { ApiResponse } from "@/types/ApiResponse"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
 import { Check } from "lucide-react"
 import { MorphingSquare } from "@/components/ui/morphing-square"
@@ -74,26 +75,26 @@ const SetupUsernamePage = () => {
     const progressPercent = ((currentStep + 1) / steps.length) * 100
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100">
-            <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
+        <div className="flex justify-center items-center min-h-screen bg-background cyber-grid relative z-10">
+            <div className="w-full max-w-md p-8 space-y-6 cyber-chamfer border border-border bg-background/90 backdrop-blur-md shadow-neon">
                 {/* Progress Bar */}
                 <div className="space-y-4">
-                    <div className="flex items-center justify-between text-sm text-gray-500">
-                        <span>Step {currentStep + 1} of {steps.length}</span>
-                        <span className="font-medium text-gray-700">Almost there!</span>
+                    <div className="flex items-center justify-between text-xs font-mono text-muted-foreground uppercase tracking-widest">
+                        <span>Step {currentStep + 1} / {steps.length}</span>
+                        <span className="font-bold text-accent shadow-neon-sm">Almost there</span>
                     </div>
-                    <Progress value={progressPercent} className="h-2" />
+                    <Progress value={progressPercent} className="h-1 cyber-chamfer-sm bg-muted/50 [&>div]:bg-accent" />
 
                     {/* Step Indicators */}
-                    <div className="flex justify-between">
+                    <div className="flex justify-between mt-4">
                         {steps.map((step, index) => (
-                            <div key={index} className="flex flex-col items-center gap-1.5 flex-1">
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
+                            <div key={index} className="flex flex-col items-center gap-2 flex-1">
+                                <div className={`w-8 h-8 flex items-center justify-center text-sm font-bold font-mono transition-all duration-300 cyber-chamfer-sm ${
                                     index < currentStep
-                                        ? 'bg-green-500 text-white'
+                                        ? 'bg-secondary text-background shadow-neon-secondary'
                                         : index === currentStep
-                                            ? 'bg-blue-600 text-white ring-4 ring-blue-100'
-                                            : 'bg-gray-200 text-gray-500'
+                                            ? 'bg-accent text-background shadow-neon border-2 border-accent/20'
+                                            : 'bg-muted/50 text-muted-foreground border border-border'
                                 }`}>
                                     {index < currentStep ? (
                                         <Check className="h-4 w-4" />
@@ -101,8 +102,8 @@ const SetupUsernamePage = () => {
                                         index + 1
                                     )}
                                 </div>
-                                <span className={`text-xs text-center leading-tight ${
-                                    index === currentStep ? 'text-blue-600 font-semibold' : 'text-gray-400'
+                                <span className={`text-[10px] text-center leading-tight uppercase font-mono tracking-wider ${
+                                    index === currentStep ? 'text-accent font-bold' : 'text-muted-foreground'
                                 }`}>
                                     {step.label}
                                 </span>
@@ -111,30 +112,32 @@ const SetupUsernamePage = () => {
                     </div>
                 </div>
 
-                <div className="text-center">
-                    <h1 className="text-3xl font-extrabold tracking-tight lg:text-4xl mb-2">Choose Username</h1>
-                    <p className="text-gray-500">You successfully logged in! Please choose a unique username to continue.</p>
+                <div className="text-center pt-4">
+                    <h1 className="text-3xl font-heading font-black tracking-widest uppercase cyber-glitch mb-2" data-text="IDENTIFY">IDENTIFY</h1>
+                    <p className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
+                        <span className="text-accent mr-2">{">"}</span>Initialize network alias
+                    </p>
                 </div>
 
-                <form onSubmit={onSubmit} className="space-y-4">
+                <form onSubmit={onSubmit} className="space-y-6">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="username">Username</label>
-                        <input
+                        <label className="block text-sm font-mono text-foreground mb-2 uppercase tracking-wide" htmlFor="username">Network Alias</label>
+                        <Input
                             id="username"
                             type="text"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            className="w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
-                            placeholder="Enter a unique username"
+                            placeholder="enter_alias"
                         />
                     </div>
 
                     <Button
                         type="submit"
                         disabled={isSubmitting || username.length < 3}
-                        className="w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300"
+                        className="w-full"
+                        variant="glitch"
                     >
-                        {isSubmitting ? 'Saving...' : 'Save Username'}
+                        {isSubmitting ? 'Syncing...' : 'Lock Alias'}
                     </Button>
                 </form>
             </div>

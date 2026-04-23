@@ -106,18 +106,18 @@ const UserProfilePage = () => {
 
     if (isLoadingStatus) {
         return (
-            <div className="flex justify-center items-center min-h-screen bg-zinc-50 dark:bg-zinc-950">
-                <Loader2 className="h-10 w-10 text-muted-foreground animate-spin" />
+            <div className="flex justify-center items-center min-h-screen bg-background cyber-grid">
+                <Loader2 className="h-10 w-10 text-accent animate-spin" />
             </div>
         )
     }
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+        <div className="min-h-screen relative z-10 cyber-grid">
             {/* Top bar */}
-            <nav className="p-4 md:p-6 shadow-sm border-b border-zinc-200 dark:border-zinc-800">
+            <nav className="p-4 md:p-6 border-b border-border bg-background/80 backdrop-blur">
                 <div className="container mx-auto flex justify-between items-center">
-                    <Link href="/" className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+                    <Link href="/" className="text-2xl font-heading font-black text-foreground cyber-glitch tracking-widest uppercase" data-text="Quite Message">
                         Quite Message
                     </Link>
                     <Link href="/sign-in">
@@ -129,54 +129,59 @@ const UserProfilePage = () => {
             <div className="max-w-2xl mx-auto px-4 py-10 md:py-16">
 
                 {/* Profile Header */}
-                <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-zinc-200 dark:bg-zinc-800 mb-4 shadow-sm">
-                        <User className="w-10 h-10 text-zinc-600 dark:text-zinc-400" />
+                <div className="text-center mb-10">
+                    <div className="inline-flex items-center justify-center w-24 h-24 cyber-chamfer border-2 border-accent bg-background mb-6 shadow-neon relative group">
+                        <User className="w-12 h-12 text-accent group-hover:animate-pulse" />
                     </div>
 
-                    <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 mb-1">
+                    <h1 className="text-4xl md:text-5xl font-heading font-black uppercase tracking-widest text-foreground mb-3 cyber-glitch text-shadow-neon" data-text={`@${username}`}>
                         @{username}
                     </h1>
-                    <p className="text-zinc-500 dark:text-zinc-400 text-sm">
-                        Send an anonymous message — they&apos;ll never know it&apos;s you 👀
+                    <p className="text-muted-foreground font-mono text-sm uppercase tracking-widest">
+                        <span className="text-accent mr-2">{">"}</span>
+                        Send an anonymous data packet
                     </p>
                 </div>
 
                 {/* Not accepting messages state */}
                 {isAccepting === false ? (
-                    <Card className="text-center">
+                    <Card className="text-center" variant="terminal">
                         <CardContent className="py-10">
-                            <div className="rounded-full bg-muted p-4 inline-flex mb-4">
-                                <Lock className="w-8 h-8 text-muted-foreground" />
+                            <div className="cyber-chamfer border border-destructive bg-destructive/10 p-4 inline-flex mb-4 shadow-neon">
+                                <Lock className="w-8 h-8 text-destructive" />
                             </div>
-                            <h2 className="text-lg font-semibold mb-1">Not accepting messages</h2>
-                            <p className="text-sm text-muted-foreground">
-                                This user has turned off anonymous messages for now.
+                            <h2 className="text-lg font-heading text-destructive mb-1 uppercase tracking-wide">Access Denied</h2>
+                            <p className="text-sm font-mono text-muted-foreground uppercase mt-2">
+                                <span className="text-destructive mr-2">ERR_01:</span>
+                                This terminal is not accepting incoming packets.
                             </p>
                         </CardContent>
                     </Card>
                 ) : (
                     <>
                         {/* Message Box */}
-                        <Card className="mb-6 hover:shadow-lg transition-shadow duration-300">
+                        <Card className="mb-8" variant="holographic">
                             <CardHeader className="pb-2">
                                 <div className="flex items-center gap-2">
-                                    <MessageCircle className="h-4 w-4 text-muted-foreground" />
-                                    <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                                        Your anonymous message
+                                    <MessageCircle className="h-4 w-4 text-accent" />
+                                    <span className="text-sm font-mono font-medium text-accent uppercase tracking-wider">
+                                        Construct Payload
                                     </span>
                                 </div>
                             </CardHeader>
                             <CardContent className="pt-2 space-y-4">
-                                <div className="relative">
+                                <div className="relative group/textarea">
+                                    <div className="absolute left-3 top-3 text-accent font-mono text-sm select-none pointer-events-none">
+                                        {">"}
+                                    </div>
                                     <textarea
-                                        className="w-full rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 px-4 py-3 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all min-h-[130px] text-sm"
-                                        placeholder="Ask something curious, confess a thought, or just say something fun... 🔮"
+                                        className="w-full cyber-chamfer-sm border border-border bg-input/50 px-3 pl-8 py-3 text-foreground placeholder:text-muted-foreground placeholder:font-mono resize-none focus:outline-none focus:border-accent focus:shadow-neon transition-all min-h-[130px] text-sm font-mono"
+                                        placeholder="[ INPUT DATA STREAM HERE ]"
                                         value={messageContent}
                                         onChange={(e) => setMessageContent(e.target.value.slice(0, maxChars))}
                                         rows={5}
                                     />
-                                    <span className={`absolute bottom-3 right-3 text-xs font-medium ${charCount > maxChars * 0.9 ? 'text-destructive' : 'text-muted-foreground'}`}>
+                                    <span className={`absolute bottom-3 right-3 font-mono text-xs font-bold ${charCount > maxChars * 0.9 ? 'text-destructive drop-shadow-[0_0_5px_rgba(255,51,102,0.8)]' : 'text-accent'}`}>
                                         {charCount}/{maxChars}
                                     </span>
                                 </div>
@@ -186,69 +191,71 @@ const UserProfilePage = () => {
                                     disabled={isSending || !messageContent.trim()}
                                     className="w-full gap-2"
                                     size="lg"
+                                    variant="glitch"
                                 >
                                     {isSending ? (
-                                        <><Loader2 className="h-4 w-4 animate-spin" /> Sending...</>
+                                        <><Loader2 className="h-4 w-4 animate-spin" /> Uploading...</>
                                     ) : sent ? (
-                                        <><span>✅</span> Sent! They&apos;ll wonder who sent this...</>
+                                        <><span>{">"}</span> Transmission Successful</>
                                     ) : (
-                                        <><Send className="h-4 w-4" /> Send Anonymously</>
+                                        <><Send className="h-4 w-4" /> Execute Transmission</>
                                     )}
                                 </Button>
                             </CardContent>
                         </Card>
 
                         {/* AI Suggested Questions */}
-                        <Card className="hover:shadow-lg transition-shadow duration-300">
+                        <Card variant="terminal">
                             <CardHeader className="pb-3">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
-                                        <Sparkles className="h-4 w-4 text-yellow-500" />
-                                        <span className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">AI Suggested Questions</span>
-                                        <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full font-medium">
+                                        <Sparkles className="h-4 w-4 text-secondary animate-pulse" />
+                                        <span className="text-sm font-mono font-bold text-secondary uppercase tracking-widest">AI Node Suggestions</span>
+                                        <span className="text-[10px] text-background bg-secondary px-2 py-0.5 font-bold uppercase tracking-widest shadow-neon-secondary">
                                             Gemini
                                         </span>
                                     </div>
                                     <Button
                                         onClick={fetchSuggestions}
                                         disabled={isLoadingSuggestions}
-                                        variant="ghost"
-                                        size="sm"
-                                        className="h-8 w-8 p-0"
+                                        variant="outline"
+                                        size="icon-sm"
+                                        className="border-secondary text-secondary hover:bg-secondary hover:text-background"
                                     >
                                         <RefreshCw className={`h-4 w-4 ${isLoadingSuggestions ? 'animate-spin' : ''}`} />
                                     </Button>
                                 </div>
                             </CardHeader>
-                            <Separator />
+                            <Separator className="bg-border/50" />
                             <CardContent className="pt-4">
                                 {isLoadingSuggestions ? (
                                     <div className="space-y-3">
                                         {[1, 2, 3].map(i => (
-                                            <Skeleton key={i} className="h-12 w-full rounded-lg" />
+                                            <Skeleton key={i} className="h-12 w-full cyber-chamfer-sm bg-muted/50" />
                                         ))}
                                     </div>
                                 ) : suggestedMessages.length > 0 ? (
-                                    <div className="space-y-2">
+                                    <div className="space-y-3">
                                         {suggestedMessages.map((msg, index) => (
                                             <button
                                                 key={index}
                                                 onClick={() => setMessageContent(msg)}
-                                                className="w-full text-left px-4 py-3 rounded-lg bg-zinc-50 dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 hover:border-primary/30 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 text-sm transition-all duration-200 group flex items-center gap-2"
+                                                className="w-full text-left px-4 py-3 cyber-chamfer-sm bg-background border border-border hover:border-secondary hover:shadow-neon-secondary text-foreground text-sm font-mono transition-all duration-200 group flex items-start gap-3"
                                             >
-                                                <ArrowRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary shrink-0 transition-colors" />
+                                                <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-secondary shrink-0 transition-colors mt-0.5" />
                                                 <span>{msg}</span>
                                             </button>
                                         ))}
                                     </div>
                                 ) : (
-                                    <p className="text-muted-foreground text-sm text-center py-6">
-                                        Click refresh to load suggestions ✨
+                                    <p className="text-muted-foreground font-mono text-sm text-center py-6 uppercase tracking-wider">
+                                        <span className="text-secondary mr-2">{">"}</span>
+                                        Click refresh to extract concepts
                                     </p>
                                 )}
 
-                                <p className="text-xs text-muted-foreground text-center mt-4">
-                                    Click any suggestion to use it as your message
+                                <p className="text-xs font-mono text-muted-foreground text-center mt-6 uppercase tracking-wider opacity-70">
+                                    [ Select parameter to populate input ]
                                 </p>
                             </CardContent>
                         </Card>
@@ -256,13 +263,13 @@ const UserProfilePage = () => {
                 )}
 
                 {/* Footer note */}
-                <p className="text-center text-muted-foreground text-xs mt-8 font-medium tracking-wide">
-                    100% anonymous · Powered by Quite Message
+                <p className="text-center font-mono text-muted-foreground text-xs mt-12 tracking-widest uppercase">
+                    SYS.ANON_MODE: ACTIVE // SECURE CONNECTION
                 </p>
             </div>
 
-            <footer className="text-center p-6 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-zinc-600 dark:text-zinc-400 font-medium tracking-wide">
-                © 2026 Quite App. All rights reserved.
+            <footer className="text-center p-6 border-t border-border bg-background/50 font-mono text-muted-foreground text-xs uppercase tracking-widest">
+                © 2026 QUITE_APP_NET // ALL_RIGHTS_RESERVED
             </footer>
         </div>
     )
