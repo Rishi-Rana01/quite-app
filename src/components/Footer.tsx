@@ -42,7 +42,7 @@ const Footer = () => {
       {/* Cyberpunk Top Accent */}
       <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-primary to-transparent opacity-50"></div>
 
-      <div className="container mx-auto px-4 md:px-6 py-6">
+      <div className="w-full max-w-250 mx-auto px-6 md:px-10 py-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center md:text-left">
 
           {/* Brand Section */}

@@ -22,7 +22,7 @@ const Navbar = () => {
       <div className='container mx-auto flex flex-col md:flex-row justify-between items-center px-4 py-3 md:py-4'>
         {/* Brand */}
         <Link href="/" className='text-xl font-bold tracking-widest uppercase text-primary drop-shadow-[0_0_8px_rgba(0,255,157,0.4)] mb-3 md:mb-0 hover:drop-shadow-[0_0_12px_rgba(0,255,157,0.7)] transition-all'>
-          Quite_App
+          Quite-App
         </Link>
 
         {/* Nav Links + Actions */}

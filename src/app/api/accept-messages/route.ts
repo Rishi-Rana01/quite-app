@@ -26,7 +26,7 @@ export async function POST(request: Request) {
             userId, {
             isAcceptingMessages: acceptMessages
         },
-            { new: true }
+            { returnDocument: 'after' }
         )
 
         if (!updatedUser) {
