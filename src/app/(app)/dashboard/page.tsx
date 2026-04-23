@@ -23,6 +23,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { MorphingSquare } from "@/components/ui/morphing-square"
 import { Message } from "@/model/User"
 import { acceptMessageSchema } from "@/schemas/acceptMessageSchema"
 import { ApiResponse } from "@/types/ApiResponse"
@@ -37,7 +38,7 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
 const Dashboard = () => {
-    const { data: session } = useSession()
+    const { data: session, status } = useSession()
     const [messages, setMessages] = useState<Message[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [isSwitching, setIsSwitching] = useState(false)
@@ -142,6 +143,14 @@ const Dashboard = () => {
 
         return result
     }, [messages, searchQuery, sortOrder])
+
+    if (status === 'loading') {
+        return (
+            <div className="flex justify-center items-center min-h-[60vh]">
+                <MorphingSquare message="Loading..." />
+            </div>
+        )
+    }
 
     if (!session || !session.user) {
         return <div>Please Login
@@ -249,18 +258,10 @@ const Dashboard = () => {
                     </Select>
                 </div>
 
-                {/* Skeleton Loading State */}
+                {/* Loading State */}
                 {isLoading ? (
-                    <div className="space-y-4">
-                        {[1, 2, 3].map((i) => (
-                            <Card key={i} className="p-4">
-                                <div className="flex items-center justify-between mb-2">
-                                    <Skeleton className="h-5 w-3/4" />
-                                    <Skeleton className="h-8 w-8 rounded-md" />
-                                </div>
-                                <Skeleton className="h-4 w-1/3 mt-2" />
-                            </Card>
-                        ))}
+                    <div className="flex justify-center items-center py-12">
+                        <MorphingSquare message="Loading messages..." />
                     </div>
                 ) : filteredMessages.length === 0 ? (
                     /* Empty State with Share Link CTA */

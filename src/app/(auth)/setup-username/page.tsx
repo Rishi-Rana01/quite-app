@@ -8,6 +8,7 @@ import { ApiResponse } from "@/types/ApiResponse"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Check } from "lucide-react"
+import { MorphingSquare } from "@/components/ui/morphing-square"
 
 const steps = [
     { label: 'Create Account', description: 'Sign up completed' },
@@ -62,7 +63,11 @@ const SetupUsernamePage = () => {
     }
 
     if (status === 'loading') {
-        return <div className="flex justify-center items-center min-h-screen bg-gray-100">Loading...</div>
+        return (
+            <div className="flex justify-center items-center min-h-screen bg-gray-100">
+                <MorphingSquare message="Loading..." />
+            </div>
+        )
     }
 
     // Progress percentage: step 0 done = 33%, step 1 active = 66%, step 2 done = 100%
