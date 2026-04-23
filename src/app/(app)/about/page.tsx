@@ -79,8 +79,8 @@ const AboutPage = () => {
         <section className="grid md:grid-cols-2 gap-12 items-start">
           
           {/* Use Cases */}
-          <div className="bg-card/30 p-8 rounded-lg border border-border cyber-scanlines relative overflow-hidden">
-            <h3 className="text-2xl font-bold uppercase tracking-wider mb-6 flex items-center gap-2">
+          <div className="bg-card/30 p-8 rounded-lg border border-border  ">
+            <h3 className="text-xl font-bold uppercase tracking-wider mb-6 flex items-center gap-2">
               <MessageSquare className="text-primary" />
               Primary Use Cases
             </h3>
