@@ -1,12 +1,17 @@
 import { NextResponse, NextRequest } from 'next/server'
 import { getToken } from "next-auth/jwt"
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
 
     const token = await getToken({ req: request })
     const url = request.nextUrl
 
     const needsUsernameSetup = token && typeof token.username === 'string' && token.username.startsWith('user_')
+
+    // Always allow API routes and static files
+    if (url.pathname.startsWith('/api') || url.pathname.startsWith('/_next') || url.pathname.includes('.')) {
+        return NextResponse.next();
+    }
 
     // If user needs to set up a username, only allow /setup-username
     if (needsUsernameSetup && !url.pathname.startsWith('/setup-username')) {
