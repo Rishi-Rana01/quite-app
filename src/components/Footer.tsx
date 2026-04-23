@@ -108,7 +108,7 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="mt-6 pt-4 border-t border-border/50 flex flex-col md:flex-row justify-between items-center text-xs text-muted-foreground gap-2">
-          <p>&copy; {new Date().getFullYear()} Quite App. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Quite App. All rights reserved. &nbsp; || &nbsp; <Link href="https://rishirana.vercel.app" target="_blank" className="hover:text-primary transition-colors"> By Rishi Rana</Link></p>
           <div className="flex space-x-4">
             <Link href="#" className="hover:text-primary transition-colors">Privacy Policy</Link>
             <Link href="#" className="hover:text-primary transition-colors">Terms of Service</Link>
