@@ -54,8 +54,8 @@ export default function Home() {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="hidden md:flex bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50" />
-          <CarouselNext className="hidden md:flex bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50" />
+          <CarouselPrevious className="flex bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50 -left-3 md:-left-12 h-8 w-8 md:h-10 md:w-10" />
+          <CarouselNext className="flex bg-white/50 backdrop-blur-sm dark:bg-zinc-900/50 -right-3 md:-right-12 h-8 w-8 md:h-10 md:w-10" />
         </Carousel>
       </main>
 

@@ -12,6 +12,17 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Message } from "@/model/User"
 import { acceptMessageSchema } from "@/schemas/acceptMessageSchema"
 import { ApiResponse } from "@/types/ApiResponse"
@@ -34,8 +45,15 @@ const Dashboard = () => {
     const [searchQuery, setSearchQuery] = useState('')
     const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest')
 
-    const handleDeleteMessage = (messageId: string) => {
-        setMessages(messages.filter((message) => (message._id as unknown as string) !== messageId))
+    const handleDeleteMessage = async (messageId: string) => {
+        try {
+            const response = await axios.delete<ApiResponse>(`/api/delete-message/${messageId}`)
+            toast.success(response.data.message)
+            setMessages(messages.filter((message) => (message._id as unknown as string) !== messageId))
+        } catch (error) {
+            const axiosError = error as AxiosError<ApiResponse>
+            toast.error(axiosError.response?.data.message || "Failed to delete message")
+        }
     }
 
     const form = useForm({
@@ -145,23 +163,23 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="p-8 max-w-6xl mx-auto">
-            <h1 className="text-4xl font-bold mb-6">User Dashboard</h1>
+        <div className="p-4 md:p-8 max-w-6xl mx-auto">
+            <h1 className="text-3xl md:text-4xl font-bold mb-6">User Dashboard</h1>
 
-            <div className="mb-4">
-                <h2 className="text-2xl font-semibold mb-2">Copy Your Unique Link</h2>
-                <div className="flex items-center space-x-2">
-                    <div className="flex items-center space-x-2">
+            <div className="mb-6">
+                <h2 className="text-xl md:text-2xl font-semibold mb-3">Copy Your Unique Link</h2>
+                <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                         <input
                             type="text"
                             value={profileUrl}
                             readOnly
-                            className="border border-gray-300 rounded-md px-2 py-1"
+                            className="border border-gray-300 rounded-md px-3 py-2 text-sm w-full sm:w-auto sm:min-w-[280px] bg-muted/30"
                         />
                         <Button
                             onClick={copyToClipboard}
                             variant={isCopied ? "secondary" : "default"}
-                            className="min-w-[90px] transition-all duration-200"
+                            className="min-w-[90px] transition-all duration-200 shrink-0"
                         >
                             {isCopied ? (
                                 <>
@@ -176,8 +194,7 @@ const Dashboard = () => {
                             )}
                         </Button>
                     </div>
-                    <div className="flex items-center space-x-2">
-
+                    <div className="flex items-center gap-2">
                         <Switch
                             {...register('acceptMessages')}
                             checked={acceptMessages}
@@ -188,31 +205,31 @@ const Dashboard = () => {
                             {acceptMessages ? 'Accepting messages' : 'Not accepting messages'}
                         </span>
                     </div>
-                    <Separator />
                 </div>
+                <Separator className="mt-4" />
             </div>
 
             <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-semibold">Your Messages</h2>
+                    <h2 className="text-xl md:text-2xl font-semibold">Your Messages</h2>
                     <Button onClick={() => fetchMessages(true)} disabled={isLoading}>
                         {isLoading ? (
                             <>
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Refreshing...
+                                <span className="hidden sm:inline">Refreshing...</span>
                             </>
                         ) : (
                             <>
                                 <RefreshCw className="mr-2 h-4 w-4" />
-                                Refresh
+                                <span className="hidden sm:inline">Refresh</span>
                             </>
                         )}
                     </Button>
                 </div>
 
                 {/* Search & Sort Controls */}
-                <div className="flex items-center gap-3">
-                    <div className="relative flex-1 max-w-sm">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                    <div className="relative flex-1">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
                             placeholder="Search messages..."
@@ -222,7 +239,7 @@ const Dashboard = () => {
                         />
                     </div>
                     <Select value={sortOrder} onValueChange={(value: 'newest' | 'oldest') => setSortOrder(value)}>
-                        <SelectTrigger className="w-[160px]">
+                        <SelectTrigger className="w-full sm:w-[160px]">
                             <SelectValue placeholder="Sort by" />
                         </SelectTrigger>
                         <SelectContent>
@@ -247,7 +264,7 @@ const Dashboard = () => {
                     </div>
                 ) : filteredMessages.length === 0 ? (
                     /* Empty State with Share Link CTA */
-                    <div className="flex flex-col items-center justify-center p-12 bg-muted/50 rounded-xl border border-dashed border-muted-foreground/25">
+                    <div className="flex flex-col items-center justify-center p-8 md:p-12 bg-muted/50 rounded-xl border border-dashed border-muted-foreground/25">
                         <div className="rounded-full bg-muted p-4 mb-4">
                             <Inbox className="h-10 w-10 text-muted-foreground" />
                         </div>
@@ -268,16 +285,40 @@ const Dashboard = () => {
                     </div>
                 ) : (
                     filteredMessages.map((message) => (
-                        <Card key={message._id as unknown as string} className="p-4">
-                            <div className="flex items-center justify-between mb-2">
-                                <p className="font-semibold">{message.content}</p>
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => handleDeleteMessage(message._id as unknown as string)}
-                                >
-                                    <Trash2 className="h-4 w-4" />
-                                </Button>
+                        <Card
+                            key={message._id as unknown as string}
+                            className="p-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20 cursor-default"
+                        >
+                            <div className="flex items-start justify-between gap-3 mb-2">
+                                <p className="font-semibold flex-1">{message.content}</p>
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="shrink-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors duration-200"
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Delete this message?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This action cannot be undone. This message will be permanently removed.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction
+                                                onClick={() => handleDeleteMessage(message._id as unknown as string)}
+                                                className="bg-destructive text-white hover:bg-destructive/90"
+                                            >
+                                                Delete
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
                             </div>
                             <div className="text-sm text-muted-foreground">
                                 <p>Received at: {new Date(message.createdAt).toLocaleString()}</p>
