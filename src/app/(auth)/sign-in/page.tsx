@@ -1,139 +1,209 @@
-'use client'
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import Link from "next/link"
-import { useState } from "react"
-import { toast } from "sonner"
-import { useRouter } from "next/navigation"
-import { signInSchema } from "@/schemas/signInSchema"
-import { signIn } from "next-auth/react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+'use client';
 
-const SignInPage = () => {
-    const router = useRouter()
-    const [isSubmitting, setIsSubmitting] = useState(false)
+import { useState, ChangeEvent, FormEvent, ReactNode } from 'react';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
+import Image from 'next/image';
+import Link from 'next/link';
 
-    const form = useForm<z.infer<typeof signInSchema>>({
-        resolver: zodResolver(signInSchema),
-        defaultValues: {
-            identifier: '',
-            password: '',
-        },
-    })
+import {
+  Ripple,
+  AuthTabs,
+  TechOrbitDisplay,
+} from '@/components/ui/modern-animated-sign-in';
 
-    const { register, handleSubmit, formState: { errors } } = form
-
-    const onSubmit = async (data: z.infer<typeof signInSchema>) => {
-        setIsSubmitting(true)
-        try {
-            const result = await signIn('credentials', {
-                redirect: false,
-                identifier: data.identifier,
-                password: data.password,
-            })
-
-            if (result?.error) {
-                if (result.error === 'CredentialsSignin') {
-                    toast.error('Login Failed', {
-                        description: 'Incorrect username or password',
-                    })
-                } else {
-                    toast.error('Error', {
-                        description: result.error,
-                    })
-                }
-            } else if (result?.url) {
-                router.replace('/dashboard')
-            }
-        } catch (error) {
-            console.error('Error in sign in of User', error)
-            toast.error('Sign-in Failed', {
-                description: 'An unexpected error occurred',
-            })
-        } finally {
-            setIsSubmitting(false)
-        }
-    }
-
-    return (
-        <div className="flex justify-center items-center min-h-screen bg-background cyber-grid relative z-10">
-            <div className="w-full max-w-md p-8 space-y-8 cyber-chamfer border border-border bg-background/90 backdrop-blur-md shadow-neon">
-                <div className="text-center">
-                    <h1 className="text-4xl font-heading font-black uppercase tracking-widest text-foreground cyber-glitch mb-4" data-text="SYSTEM LOGIN">
-                        SYSTEM LOGIN
-                    </h1>
-                    <p className="font-mono text-muted-foreground uppercase tracking-widest text-sm mb-4">
-                        <span className="text-accent mr-2">{">"}</span>AUTHENTICATE TO CONTINUE
-                    </p>
-                </div>
-
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                    <div>
-                        <label className="block text-sm font-mono text-foreground mb-2 uppercase tracking-wide" htmlFor="identifier">Email or Username</label>
-                        <Input
-                            id="identifier"
-                            type="text"
-                            placeholder="user@domain.com"
-                            {...register('identifier')}
-                        />
-                        {errors.identifier && <p className="mt-1 font-mono text-xs text-destructive">{errors.identifier.message}</p>}
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-mono text-foreground mb-2 uppercase tracking-wide" htmlFor="password">Password</label>
-                        <Input
-                            id="password"
-                            type="password"
-                            placeholder="••••••••"
-                            {...register('password')}
-                        />
-                        {errors.password && <p className="mt-1 font-mono text-xs text-destructive">{errors.password.message}</p>}
-                    </div>
-
-                    <Button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="w-full"
-                        variant="glitch"
-                    >
-                        {isSubmitting ? 'Authenticating...' : 'Initialize Login'}
-                    </Button>
-                </form>
-
-                <div className="flex items-center space-x-4 my-6">
-                    <div className="flex-1 h-px bg-border"></div>
-                    <span className="text-xs font-mono text-muted-foreground uppercase tracking-widest">EXTERNAL_AUTH</span>
-                    <div className="flex-1 h-px bg-border"></div>
-                </div>
-
-                <div className="space-y-3">
-                    <Button
-                        onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
-                        variant="outline"
-                        className="w-full font-mono text-sm uppercase tracking-wide hover:bg-secondary hover:text-background border-secondary text-secondary hover:shadow-neon-secondary"
-                        type="button"
-                    >
-                        [ AUTH: GOOGLE ]
-                    </Button>
-                    <Button
-                        onClick={() => signIn('github', { callbackUrl: '/dashboard' })}
-                        variant="outline"
-                        className="w-full font-mono text-sm uppercase tracking-wide hover:bg-foreground hover:text-background border-foreground text-foreground hover:shadow-neon"
-                        type="button"
-                    >
-                        [ AUTH: GITHUB ]
-                    </Button>
-                </div>
-
-                <p className="text-sm text-center font-mono text-muted-foreground uppercase tracking-wider pt-4">
-                    UNREGISTERED ENTITY?{' '}
-                    <Link href="/sign-up" className="font-bold text-accent hover:text-secondary hover:underline transition-colors shadow-neon-sm">CREATE ACCOUNT</Link>
-                </p>
-            </div>
-        </div>
-    )
+interface OrbitIcon {
+  component: () => ReactNode;
+  className: string;
+  duration?: number;
+  delay?: number;
+  radius?: number;
+  path?: boolean;
+  reverse?: boolean;
 }
 
-export default SignInPage
+import { Ghost, MessageSquare, Search, Shield, UserX, Lock, EyeOff, Key } from 'lucide-react';
+
+const iconsArray: OrbitIcon[] = [
+  {
+    component: () => <Ghost className="w-5 h-5 text-primary" />,
+    className: 'size-[40px] border-none bg-background/80 backdrop-blur-sm p-2 rounded-full cyber-chamfer-sm shadow-neon-sm',
+    duration: 25,
+    delay: 0,
+    radius: 85,
+    path: true,
+    reverse: false,
+  },
+  {
+    component: () => <MessageSquare className="w-5 h-5 text-secondary" />,
+    className: 'size-[40px] border-none bg-background/80 backdrop-blur-sm p-2 rounded-full cyber-chamfer-sm shadow-neon-sm',
+    duration: 30,
+    delay: 15,
+    radius: 120,
+    path: true,
+    reverse: true,
+  },
+  {
+    component: () => <Search className="w-5 h-5 text-accent" />,
+    className: 'size-[40px] border-none bg-background/80 backdrop-blur-sm p-2 rounded-full cyber-chamfer shadow-neon',
+    duration: 20,
+    delay: 5,
+    radius: 155,
+    path: true,
+    reverse: false,
+  },
+  {
+    component: () => <Shield className="w-6 h-6 text-primary" />,
+    className: 'size-[50px] border-none bg-background/80 backdrop-blur-sm p-3 rounded-full cyber-chamfer shadow-neon',
+    duration: 35,
+    delay: 20,
+    radius: 190,
+    path: true,
+    reverse: true,
+  },
+  {
+    component: () => <UserX className="w-5 h-5 text-secondary" />,
+    className: 'size-[40px] border-none bg-background/80 backdrop-blur-sm p-2 rounded-full cyber-chamfer-sm shadow-neon-sm',
+    duration: 22,
+    delay: 10,
+    radius: 225,
+    path: true,
+    reverse: false,
+  },
+  {
+    component: () => <EyeOff className="w-6 h-6 text-accent" />,
+    className: 'size-[50px] border-none bg-background/80 backdrop-blur-sm p-3 rounded-full cyber-chamfer shadow-neon',
+    duration: 40,
+    delay: 25,
+    radius: 260,
+    path: true,
+    reverse: true,
+  },
+  {
+    component: () => <Lock className="w-5 h-5 text-primary" />,
+    className: 'size-[40px] border-none bg-background/80 backdrop-blur-sm p-2 rounded-full cyber-chamfer shadow-neon',
+    duration: 28,
+    delay: 10,
+    radius: 155,
+    path: true,
+    reverse: false,
+  },
+  {
+    component: () => <Key className="w-5 h-5 text-secondary" />,
+    className: 'size-[40px] border-none bg-background/80 backdrop-blur-sm p-2 rounded-full cyber-chamfer shadow-neon',
+    duration: 32,
+    delay: 5,
+    radius: 190,
+    path: true,
+    reverse: true,
+  },
+];
+
+const SignInPage = () => {
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    identifier: '',
+    password: '',
+  });
+
+  const goToForgotPassword = (
+    event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>
+  ) => {
+    event.preventDefault();
+    router.push('/sign-up');
+  };
+
+  const handleInputChange = (
+    event: ChangeEvent<HTMLInputElement>,
+    name: string
+  ) => {
+    const value = event.target.value;
+
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    try {
+      const result = await signIn('credentials', {
+        redirect: false,
+        identifier: formData.identifier,
+        password: formData.password,
+      });
+
+      if (result?.error) {
+        if (result.error === 'CredentialsSignin') {
+          toast.error('Login Failed', {
+            description: 'Incorrect username or password',
+          });
+        } else {
+          toast.error('Error', {
+            description: result.error,
+          });
+        }
+      } else if (result?.url) {
+        router.replace('/dashboard');
+      }
+    } catch (error) {
+      console.error('Error in sign in of User', error);
+      toast.error('Sign-in Failed', {
+        description: 'An unexpected error occurred',
+      });
+    }
+  };
+
+  const formFields = {
+    header: 'QUITE-LOGIN',
+    subHeader: '> AUTHENTICATE TO CONTINUE',
+    fields: [
+      {
+        label: 'identifier',
+        required: true,
+        type: 'text' as const,
+        placeholder: 'user@domain.com',
+        onChange: (event: ChangeEvent<HTMLInputElement>) =>
+          handleInputChange(event, 'identifier'),
+      },
+      {
+        label: 'password',
+        required: true,
+        type: 'password' as const,
+        placeholder: '••••••••',
+        onChange: (event: ChangeEvent<HTMLInputElement>) =>
+          handleInputChange(event, 'password'),
+      },
+    ],
+    submitButton: 'INITIALIZE',
+    textVariantButton: 'UNREGISTERED ENTITY? CREATE ACCOUNT',
+  };
+
+  return (
+    <section className='flex min-h-screen bg-background relative overflow-hidden w-full'>
+      {/* Cyberpunk background elements */}
+      <div className='cyber-scanlines'></div>
+      <div className='absolute inset-0 cyber-grid opacity-20'></div>
+
+      {/* Left Side */}
+      <span className='flex flex-col justify-center w-1/2 max-lg:hidden relative z-0'>
+        <Ripple mainCircleSize={100} />
+        <TechOrbitDisplay iconsArray={iconsArray} text='SYSTEM ACCESS' />
+      </span>
+
+      {/* Right Side */}
+      <span className='w-1/2 h-dvh flex flex-col justify-center items-center max-lg:w-full max-lg:px-[10%] relative z-10'>
+        <AuthTabs
+          formFields={formFields}
+          goTo={goToForgotPassword}
+          handleSubmit={handleSubmit}
+          onSocialLogin={(provider) => signIn(provider, { callbackUrl: '/dashboard' })}
+        />
+      </span>
+    </section>
+  );
+}
+
+export default SignInPage;

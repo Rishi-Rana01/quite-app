@@ -40,6 +40,9 @@
   --animate-blink: blink 1s step-end infinite;
   --animate-scanline: scanline 8s linear infinite;
   --animate-rgb-shift: rgbShift 3s infinite;
+  --animate-ripple: ripple 2s ease calc(var(--i, 0) * 0.2s) infinite;
+  --animate-orbit: orbit calc(var(--duration) * 1s) linear infinite;
+  
 }
 
 :root {
@@ -233,4 +236,14 @@
   60% { clip-path: inset(20% 0 50% 0); }
   80% { clip-path: inset(50% 0 30% 0); }
   100% { clip-path: inset(5% 0 80% 0); }
+}
+
+@keyframes ripple {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(0.9); }
+}
+
+@keyframes orbit {
+  0% { transform: rotate(0deg) translateY(calc(var(--radius) * 1px)) rotate(0deg); }
+  100% { transform: rotate(360deg) translateY(calc(var(--radius) * 1px)) rotate(-360deg); }
 }
