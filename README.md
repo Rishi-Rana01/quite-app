@@ -13,6 +13,14 @@
 
 ---
 
+## 📱 Quick Access
+
+[![Scan for Live Demo](https://raw.githubusercontent.com/Rishi-Rana01/quite-app/main/public/qr-code.png)](https://quite-app.vercel.app)
+
+*Scan the QR code above to try the live demo instantly!*
+
+---
+
 ## 📚 Table of Contents
 
 - [Overview](#overview)
@@ -31,7 +39,7 @@
 
 ## 🎯 Overview
 
-**Quite App** is a full-featured quiet productivity application designed to help users focus on their goals and manage their tasks effectively. The application leverages modern web technologies and AI capabilities to provide intelligent task management, personalized suggestions, and an intuitive user experience.
+**Quite App** is a full-featured quiet productivity application designed to help users focus on their goals and manage their tasks effectively. The application leverages modern web technologies an[...]
 
 This project demonstrates a perfect blend of manual development expertise and AI-assisted programming, creating a production-ready application with professional quality code and features.
 
@@ -727,4 +735,4 @@ This project is open source and available under the MIT License.
 
 **Made with ❤️ by [Rishi-Rana01](https://github.com/Rishi-Rana01)**
 
-**Last Updated**: April 23, 2026
+**Last Updated**: April 24, 2026
