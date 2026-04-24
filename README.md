@@ -15,7 +15,7 @@
 
 ## 📱 Quick Access
 
-[![Scan for Live Demo](https://raw.githubusercontent.com/Rishi-Rana01/quite-app/main/public/qr-code.png)](https://quite-app.vercel.app)
+[!<img src="https://github.com/Rishi-Rana01/quite-app/blob/master/public/Quite-App%20Rishi.jpeg?raw=true" width="300" alt="Quite App QR Code">](https://quite-app.vercel.app)
 
 *Scan the QR code above to try the live demo instantly!*
 
